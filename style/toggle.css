@@ -1,0 +1,25 @@
+/*scource https://codepen.io/surjithctly/pen/pLDwe?editors=1100*/
+input[type=checkbox].toggle {
+    display: none;
+    margin-top: -50px;
+}
+
+.toggle {
+    color: lightgray;
+    content: ' ';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-size: 1em 1em;
+    background-repeat: no-repeat;
+    background-position: 0 5px;
+    background-image: url(angle-down-solid.svg);
+}
+
+.toggle.open {
+    background-image: url(angle-up-solid.svg);
+}
+
+.toggle:hover {
+    cursor: pointer;
+}

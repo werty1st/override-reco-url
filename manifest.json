@@ -1,0 +1,36 @@
+  {
+  "name": "Switch Recommender Engine on the Fly",
+  "description" : "redirect api call to custom reco service url",
+  "version": "1.3",
+  "manifest_version": 2,
+  "page_action": {
+    "default_icon": {
+      "48": "/images/download_image48.png",
+      "96": "/images/download_image96.png",
+      "128": "/images/download_image128.png"
+    }
+  },
+  "icons": {
+    "48": "/images/download_image48.png",
+    "96": "/images/download_image96.png",
+    "128": "/images/download_image128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "https://www.zdf.de/",
+    "https://api.zdf.de/"
+  ],
+
+
+  "content_scripts" : [{
+    "matches" : [ "https://www.zdf.de/fehler/*" ] ,
+    "js" : ["loader.js"],
+    
+    "run_at": "document_start"
+  }],
+  "web_accessible_resources": [ "inject.js", "toggle.js", "editor.js", "utils.js", "style/*" ],
+
+  "content_security_policy": "script-src 'self'; object-src 'self'"
+
+}
