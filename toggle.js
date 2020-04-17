@@ -56,16 +56,17 @@ async function addAngleAndEditor(){
     //add editor html and logic
     function editorHtml(config){
 
-        let editor = document.createElement("div")
+        const parser = new DOMParser();
+        
+        const editor = document.createElement("div")
         editor.classList.add("container")
-        editor.innerHTML = `
+        const html = `
         <span class="editor" brokerconfig="${config.name}">
             <div class="editor">
                 <span class="checkbox">
                 <label><input type="checkbox" value="${config.name}">override URL:</label>
                 </span>
-                <span class="url">
-                    
+                <span class="url">                    
                     <input type="url" 
                             value="${config.url}"
                             brokerconfig="${config.name}"
@@ -73,12 +74,16 @@ async function addAngleAndEditor(){
                 </span>            
             </div>
         </span>
-        `;
+        `;        
+        const parsed = parser.parseFromString(html, `text/html`)
+        const tags = parsed.getElementsByTagName(`body`)
+        for (const tag of tags) {
+            editor.appendChild(tag)
+        }
 
         editor.querySelector("input[type=checkbox]").checked = config.enabled;
         editor.querySelector("input[type=checkbox]").addEventListener("click", urlcheckbox, false);
         editor.querySelector("input[type=url]").addEventListener("change", saveCustomUrl, false);
-        //editor.setAttribute("brokerconfig", brokerconfig);
 
         return editor;
     }

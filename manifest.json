@@ -1,7 +1,7 @@
   {
   "name": "Switch Recommender Engine on the Fly",
   "description" : "redirect api call to custom reco service url",
-  "version": "1.4",
+  "version": "1.4.1",
   "manifest_version": 2,
   "page_action": {
     "default_icon": {
@@ -21,7 +21,7 @@
     "https://www.zdf.de/",
     "https://api.zdf.de/",
     "https://zdf-int-www.zdf.de/",
-    "https://zdf-int-api.zdf.de"
+    "https://zdf-int-api.zdf.de/"
   ],
 
 
