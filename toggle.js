@@ -1,3 +1,5 @@
+//this codes add a checkbox and url input to tell the addon which urls it should modify
+
 async function addAngleAndEditor(){
 
     //internal function to for angle click event

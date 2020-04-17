@@ -1,7 +1,7 @@
   {
   "name": "Switch Recommender Engine on the Fly",
   "description" : "redirect api call to custom reco service url",
-  "version": "1.3",
+  "version": "1.4",
   "manifest_version": 2,
   "page_action": {
     "default_icon": {
@@ -19,12 +19,14 @@
     "storage",
     "activeTab",
     "https://www.zdf.de/",
-    "https://api.zdf.de/"
+    "https://api.zdf.de/",
+    "https://zdf-int-www.zdf.de/",
+    "https://zdf-int-api.zdf.de"
   ],
 
 
   "content_scripts" : [{
-    "matches" : [ "https://www.zdf.de/fehler/*" ] ,
+    "matches" : [ "https://www.zdf.de/fehler/*", "https://zdf-int-www.zdf.de/*" ] ,
     "js" : ["loader.js"],
     
     "run_at": "document_start"

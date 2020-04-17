@@ -2,14 +2,45 @@
 
 const settings = new Config();
 
-//https://api.zdf.de/broker/
-const regex1 = /^https:\/\/api\.(zdf)\.de\/broker\//;
-
+//intercept only calls to the recommendation broker
+const regex1 = /^https:\/\/(api|zdf-int-api)\.(zdf)\.de\/broker\//;
 
 const XHR = XMLHttpRequest.prototype;
-const send = XHR.send; //save original
 const open = XHR.open; //save original
-const store = {};
+
+
+XHR.open = function(method, url) {
+
+    //only modify broker URLs
+    if (regex1.test(url)) {
+
+        //get brokerconfiguration from url
+        //example: https://api.zdf.de/broker/relay?brokerConfiguration=doku1&appId=exozet-zdf-pd-0.63.1676
+        let name = Config.getBrokerConfig(url);
+        
+        //load config from localStorage
+        //example: {"name":"doku2","enabled":false,"url":"https://ts1-dev.recos.aws.hrnmtech.de/trending?broker=1"}
+        let config = settings.getConfig(name);
+
+        //only modify enabled URLs
+        if (config.enabled && config.url != ""){
+            this.timeout = 5000;
+            this.ontimeout = ((name)=>{
+                return (e)=>{                   
+                    //frontend doesnt handle timeouts so well,
+                    // thats why the config gets disabled to be able to fix the url.
+                    console.error("config:",name,"timed out");
+                    settings.upsertConfig({name:name, enabled:false})
+                }
+            })(name)
+            arguments[1] = config.url;
+            return open.apply(this, arguments);
+        }
+    } 
+
+    return open.apply(this, arguments);
+}
+
 
 //zu spät und zu langsam
 // const readyState_callback = async function () {
@@ -25,48 +56,3 @@ const store = {};
 //         }
 //     };
 // }
-
-
-XHR.open = function(method, url) {
-
-    //only modify broker URLs
-    if (regex1.test(url)) {
-        let name = Config.getBrokerConfig(url);
-        let config = settings.getConfig(name);
-
-        //only modify enabled URLs
-        if (config.enabled && config.url != ""){
-            this.url = config.url;
-            this.timeout = 5000;
-            this.ontimeout = ((name)=>{
-                return (e)=>{                   
-                    console.error("config:",name,"timed out");
-                    settings.upsertConfig({name:name, enabled:false})
-                }
-            })(name)
-            arguments[1] = config.url;
-            return open.apply(this, arguments);
-            //Object.defineProperty(this, 'status',     {writable: true});
-            //Object.defineProperty( this, "url", { value: "https://ts1-staging.recos.aws.hrnmtech.de/trending?broker=1" });
-        }
-    } 
-
-    this.url = url
-    return open.apply(this, arguments);
-}
-
-
-
-XHR.send = function() {    
-    this.addEventListener('load', function() {
-        
-        if ( regex1.test(this.url) ){
-            //stage1( this.url, this.response );
-            //console.log(this.url)
-        } 
-
-    });
-    //this.onreadystatechange = readyState_callback;
-    return send.apply(this, arguments);
-};
-
